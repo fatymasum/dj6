@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blog Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="myChart" width="400" height="200"></canvas>
+    <script>
+        async function fetchData() {
+            const response = await fetch('http://localhost:8000/api/posts/');
+            const data = await response.json();
+            return data;
+        }
+
+        async function createChart() {
+            const data = await fetchData();
+            const ctx = document.getElementById('myChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.map(post => post.title),
+                    datasets: [{
+                        label: 'Blog Posts',
+                        data: data.map(post => post.content.length),
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        createChart();
+    </script>
+</body>
+</html>
